@@ -76,21 +76,103 @@
   </div>
 </section>
 
-  <div class="w-9/12 mx-auto">
+
+<section class="grid grid-cols-2 gap-3 ">  
+
+    <div class=" p-2 border border-sky-500 shadow-md  rounded-sm">
+            
+
+<div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Product name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Color
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Category
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Apple MacBook Pro 17"
+                </th>
+                <td class="px-6 py-4">
+                    Silver
+                </td>
+                <td class="px-6 py-4">
+                    Laptop
+                </td>
+                <td class="px-6 py-4">
+                    $2999
+                </td>
+            </tr>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Microsoft Surface Pro
+                </th>
+                <td class="px-6 py-4">
+                    White
+                </td>
+                <td class="px-6 py-4">
+                    Laptop PC
+                </td>
+                <td class="px-6 py-4">
+                    $1999
+                </td>
+            </tr>
+            <tr class="bg-white dark:bg-gray-800">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Magic Mouse 2
+                </th>
+                <td class="px-6 py-4">
+                    Black
+                </td>
+                <td class="px-6 py-4">
+                    Accessories
+                </td>
+                <td class="px-6 py-4">
+                    $99
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+    </div>
+  <div class="p-2 border border-sky-500 shadow-md  rounded-sm">
 
     <div>
-      <canvas id="myChart"></canvas>
+      <canvas id="top-cat"></canvas>
     </div>
     
   </div>
+</section>
 
+
+<section>
+    <div>
+<div class="w-1/4 mt-4">
+    <canvas id="top-sales"></canvas>
+  </div>
+</div>
+</section>
 
 
 <script>
-  const ctx = document.getElementById('myChart');
+  const ch_bar = document.getElementById('top-cat');
 
  
-  new Chart(ctx, {
+  new Chart(ch_bar, {
     type: 'bar',
     data: {
       labels: {{categories | safe}},
@@ -109,6 +191,47 @@
     },
     
   });
+
+  const ch_dough = document.getElementById('top-sales');
+/*
+  
+   
+    const DATA_COUNT = 5;
+    const NUMBER_CFG = {count: DATA_COUNT, min: 0, max: 100};
+
+    const data = {
+    labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+    datasets: [
+        {
+        label: 'Dataset 1',
+        data: Utils.numbers(NUMBER_CFG),
+        backgroundColor: Object.values(Utils.CHART_COLORS),
+        }
+    ]
+    };
+*/
+    
+   
+    new Chart(ch_dough, {
+        type: 'doughnut',
+        data: {
+          labels: {{categories | safe}},
+          datasets: [{
+            label: 'Total Sales ₹',
+            data: {{sales | safe}},
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        },
+        
+      
+    });
 </script>
 
 {% endblock content %}

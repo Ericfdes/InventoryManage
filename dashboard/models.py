@@ -74,10 +74,10 @@ class Product(models.Model):
             return result[-5:]
         else:
             return None
-
+  
         
     @classmethod
-    def total_sales(cls,items,colname=None,colist=None,):
+    def total_sales(cls,items,get,colname=None,colist=None):
         
         if items is not None:
             total_items=items
@@ -91,10 +91,11 @@ class Product(models.Model):
             if sales.exists():
                     highest_sales = sales.order_by('-total_sales')[:total_items]
                     least_sales= sales.order_by('-total_sales')[total_items:]
-                    return {
-                        f'highest_sales_{colname}':highest_sales,
-                        f'least_sales_{colname}':least_sales
-                    }
+                    if get == 'highest':
+                        return highest_sales
+                    elif get =='least':
+                        return least_sales
+                    
             else:
                 return None
                 
@@ -108,11 +109,16 @@ class Product(models.Model):
                 if sales.exists():
                     highest_sales = sales.order_by('-total_sales')[:total_items]
                     least_sales = sales.order_by('-total_sales')[total_items:]
-                    result[f'highest_sales_{col}'] = highest_sales
-                    result[f'least_sales_{col}'] = least_sales
+                    # result[f'highest_sales_{col}'] = highest_sales
+                    # result[f'least_sales_{col}'] = least_sales
+                    if get == 'highest':
+                        return highest_sales
+                    elif get =='least':
+                        return least_sales
                 else:
-                    result[f'highest_sales_{col}'] = None
-                    result[f'least_sales_{col}'] = None
+                    None
+                    # result[f'highest_sales_{col}'] = None
+                    # result[f'least_sales_{col}'] = None
             return result
         
         else:

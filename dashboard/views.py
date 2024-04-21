@@ -10,7 +10,7 @@ def home(request):
     stats=Product.inventory_overview()
     categories = [item['category'] for item in category_sales]
     sales = [float(item['total_sales']) for item in category_sales]
-    print(stats)
+
     context={
         'categories':categories,
         'sales':sales,
