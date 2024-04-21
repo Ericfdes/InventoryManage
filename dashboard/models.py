@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum, Max, Count
+from django.db.models import Sum, Max, Count ,F
 import random
 
 def gen_inventory():
@@ -35,7 +35,9 @@ class Product(models.Model):
                 output_field=models.DecimalField()
             )
         ).aggregate(total_revenue=Sum('revenue'))['total_revenue']
-
+        total_revenue_generated=float(total_revenue_generated)/10000000#convert  to crore
+        total_revenue_generated=round(total_revenue_generated,2)
+        total_quantity_in_stock=int(total_quantity_in_stock)
         return {
             'total_products': total_products,
             'total_quantity_in_stock': total_quantity_in_stock,
@@ -44,18 +46,35 @@ class Product(models.Model):
         } 
         
     @classmethod    
-    def category_sales(cls):
-        category_sales = cls.objects.values('category').annotate(total_sales=Count('sold'))
-        if category_sales.exists():
-            print(category_sales)
-            highest_sales_category = category_sales.order_by('-total_sales')[:5]
-            least_sales_category= category_sales.order_by('-total_sales')[5:]
-            return {
-                'highest_sales_category':highest_sales_category,
-                'least_sales_category':least_sales_category
-            }
+    def category_sales(cls,get):
+        category_sales = cls.objects.values('category').annotate(total_sales=Sum('price')*F('sold'))
+
+     
+        unique_categories = {}
+        for entry in category_sales:
+            category = entry['category']
+            total_sales = entry['total_sales']
+
+           
+            if category in unique_categories:
+           
+                unique_categories[category] += total_sales
+            else:
+              
+                unique_categories[category] = total_sales
+
+        result = [{'category': category, 'total_sales': total_sales} for category, total_sales in unique_categories.items()]
+
+        # Sort the result by total sales in descending order
+        result.sort(key=lambda x: x['total_sales'], reverse=True)
+
+        if get == 'Highest':
+            return result[:5]
+        elif get == 'Least':
+            return result[-5:]
         else:
             return None
+
         
     @classmethod
     def total_sales(cls,items,colname=None,colist=None,):
@@ -78,7 +97,7 @@ class Product(models.Model):
                     }
             else:
                 return None
-            
+                
         elif colist is not None:
             if not isinstance(colist, list):
                 raise TypeError("Cols should be given in a list")

@@ -6,15 +6,15 @@ from .models import *
 
 def home(request):
     template='dashboard/home.html'
-    products = Product.objects.all()
-    products=products[:100]
-    overview_data = Product.inventory_overview()
-    print(overview_data)
-    print()
-    sales=Product.total_sales(colname='brand',items=2)
-    print(sales)
+    category_sales=Product.category_sales(get='Highest')
+    stats=Product.inventory_overview()
+    categories = [item['category'] for item in category_sales]
+    sales = [float(item['total_sales']) for item in category_sales]
+    print(stats)
     context={
-        'products':products
+        'categories':categories,
+        'sales':sales,
+        'stats':stats,
     }
-    
+
     return render(request,template,context)

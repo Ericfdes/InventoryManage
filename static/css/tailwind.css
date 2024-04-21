@@ -1,0 +1,13 @@
+/* 
+
+npm init -y && npm install tailwindcss autoprefixer clean-css-cli && npx tailwindcss init -p
+
+npm install @tailwindcss/line-clamp
+
+npm i @preline/dropdown
+
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
