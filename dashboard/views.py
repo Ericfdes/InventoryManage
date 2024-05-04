@@ -33,5 +33,14 @@ def inventory(request):
 class InventoryView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
+    def get_options(self):
+        return "options", {
+            "product_name": [{'label': obj.product_name, 'value': obj.pk} for obj in Product.objects.all()],
+        }
+    
+    class Meta:
+        datatables_extra_json = ('get_options',)
+
    
     
