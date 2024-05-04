@@ -1,6 +1,6 @@
 
 from django.urls import path ,include, re_path
-
+#http://localhost:8000/api/inventory/?
 from dashboard import views
 from rest_framework import routers
 

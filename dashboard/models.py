@@ -1,26 +1,39 @@
 from django.db import models
 from django.db.models import Sum, Max, Count ,F
-import random
 
-def gen_inventory():
-    return random.randint(10,100)
+import os
+
+
+def upload_location(instance, filename):
+        return os.path.join('%s/prods/' % instance.get_category_display(), filename)
+    
+    
+    
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
+
+
+
+
+
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
     brand = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2)
-    image_url = models.URLField()
-    category = models.CharField(max_length=100)
-    sub_category = models.CharField(max_length=100)
-    absolute_url = models.URLField()
-    sold = models.IntegerField()
-    temperature = models.CharField(max_length=10)
+    img=models.ImageField(upload_to=upload_location, null=True, blank=True  )
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    sold = models.IntegerField(null=True,blank=True)
     quantity_value = models.FloatField(null=True)
     quantity_type = models.CharField(max_length=50, null=True)
-    #inventory=models.IntegerField(default=gen_inventory())
+    out_of_stock=models.BooleanField(default=False)
     
     
+        
     @classmethod
     def inventory_overview(cls):
         total_products = cls.objects.count()
@@ -47,12 +60,12 @@ class Product(models.Model):
         
     @classmethod    
     def category_sales(cls,get):
-        category_sales = cls.objects.values('category').annotate(total_sales=Sum('price')*F('sold'))
+        category_sales = cls.objects.values('category__name').annotate(total_sales=Sum('price')*F('sold'))
 
      
         unique_categories = {}
         for entry in category_sales:
-            category = entry['category']
+            category = entry['category__name']
             total_sales = entry['total_sales']
 
            
@@ -127,4 +140,32 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+
+class Sale(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity_sold = models.IntegerField()
+    date_sold = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.product.product_name} - {self.quantity_sold}"
+    
+    def save(self, *args, **kwargs):
+        # Calculate the total price based on quantity sold and product price
+        self.total_price = self.product.price * self.quantity_sold
+        # Update the sold field in the corresponding product
+        self.product.sold += self.quantity_sold
+        self.product.save()
+        super().save(*args, **kwargs)
+    
+    def save(self, *args, **kwargs):
+        # Update the sold field in the corresponding product
+        self.product.sold += self.quantity_sold
+        self.product.save()
+        super().save(*args, **kwargs)
+
+        
+
+
+    
     

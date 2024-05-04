@@ -12,7 +12,7 @@ def home(request):
     categories = [item['category'] for item in category_sales]
     sales = [float(item['total_sales']) for item in category_sales]
 
-    
+    print(category_sales)
     
     context={
         'categories':categories,
