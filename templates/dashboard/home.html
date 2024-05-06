@@ -162,12 +162,17 @@
 
 
 <section>
-    <div>
-<div class="w-1/4 mt-4">
+    <div class="flex justify-center content-center ">
+    <div class="w-1/4 mt-4">
     <canvas id="top-sales"></canvas>
-  </div>
+    </div>
+  <div class="w-3/4 mt-4">
+    <canvas id="month-wise"></canvas>
+    </div>
 </div>
 </section>
+
+
 
 
 <script>
@@ -222,6 +227,33 @@
             label: 'Total Sales ₹',
             data: {{sales | safe}},
             borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        },
+        
+      
+    });
+
+
+    const ln_chart = document.getElementById('month-wise');
+    new Chart(ln_chart, {
+        type: 'line',
+        data: {
+          labels: {{line_month | safe}},
+          datasets: [{
+            label: 'totalSales',
+            data: {{line_sales | safe}},
+        
+
+            pointStyle: 'circle',
+            pointRadius: 10,
+            pointHoverRadius: 15
           }]
         },
         options: {

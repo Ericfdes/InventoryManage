@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Sum, Max, Count ,F
-
+from django.db.models.functions import TruncMonth
+import datetime
 import os
 
 
@@ -165,7 +166,37 @@ class Sale(models.Model):
         super().save(*args, **kwargs)
 
         
+    @classmethod    
+    def get_monthwise_sales(cls):
+     
+        first_sale_date = cls.objects.order_by('date_sold').first().date_sold.date()
+        last_sale_date = cls.objects.order_by('-date_sold').first().date_sold.date()
+        # Generate a list of all months between the first and last sale dates
+        all_months = [first_sale_date + datetime.timedelta(days=31*i) for i in range((last_sale_date.year - first_sale_date.year) * 12 + last_sale_date.month - first_sale_date.month + 1)]
 
+        monthly_sales_dict = {month.strftime('%b'): 0 for month in all_months}
+        monthly_sales = cls.objects.annotate(month=TruncMonth('date_sold')).values('month').annotate(total_sales=Sum('quantity_sold'))
+        for entry in monthly_sales:
+            month_key = entry['month'].strftime('%b')
+            monthly_sales_dict[month_key] = entry['total_sales']
 
+        # Format the result
+        result = [{'month': month, 'total_sales': sales} for month, sales in monthly_sales_dict.items()]
+        return result
     
-    
+    @classmethod
+    def month_rev(cls):
+        start=cls.objects.order_by('date_sold').first().date_sold.date()
+        end=cls.objects.order_by('-date_sold').first().date_sold.date()
+        
+        months=[start+datetime.timedelta(days=31*month) for month in range((end.year - start.year) * 12 + end.month - start.month +1)]
+        
+        monthly_rev_dict={month.strftime('%b'):0 for month in months}
+        monthly_rev=cls.objects.annotate(month=TruncMonth('date_sold')).values('month').annotate(total_rev=Sum(F('product__price') * F('quantity_sold')))
+        for entry in monthly_rev:
+            month_key=entry['month'].strftime('%b')
+            monthly_rev_dict[month_key] = entry['total_revenue']
+            
+        result = [{'month': month , 'total_revenue': revenue} for month , revenue in monthly_rev_dict.items()]
+        return result
+                                                                                                 

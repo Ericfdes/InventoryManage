@@ -9,15 +9,27 @@ def home(request):
     
     category_sales=Product.category_sales(get='Highest')
     stats=Product.inventory_overview()
+    month_sales=Sale.get_monthwise_sales()
+    #bar
     categories = [item['category'] for item in category_sales]
     sales = [float(item['total_sales']) for item in category_sales]
-
-    print(category_sales)
+    
+    #line
+    line_month=[item['month'] for item in month_sales]
+    line_sales=[item['total_sales'] for item in month_sales]
+    monthwise=Sale.get_monthwise_sales()
+    print(monthwise)
     
     context={
         'categories':categories,
+        
+        #bar
         'sales':sales,
         'stats':stats,
+        
+        #line
+        'line_sales':line_sales,
+        'line_month':line_month,
     }
 
     return render(request,template,context)
