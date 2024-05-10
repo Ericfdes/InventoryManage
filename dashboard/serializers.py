@@ -13,3 +13,8 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ('id', 'product_name', 'brand', 'price', 'discount_price',  'category',  'sold',  'quantity_value', 'quantity_type')
 
+class SaleSerializer(serializers.ModelSerializer):
+    product=ProductSerializer()
+    class Meta:
+        model = Sale
+        fields = ('id', 'product','quantity_sold','date_sold')

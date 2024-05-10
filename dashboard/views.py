@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import *
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer,SaleSerializer
 from rest_framework import viewsets
 
 
@@ -53,6 +53,25 @@ class InventoryView(viewsets.ModelViewSet):
     
     class Meta:
         datatables_extra_json = ('get_options',)
+
+def sale(request):
+    template='dashboard/Sale.html'
+    context={
+        
+    }
+    return render(request,template,context)
+
+class SaleView(viewsets.ModelViewSet):
+    queryset = Sale.objects.all()
+    serializer_class = SaleSerializer
+    
+    # def get_options(self):
+    #     return "options", {
+    #         "product_name": [{'label': obj.product_name, 'value': obj.pk} for obj in Product.objects.all()],
+    #     }
+    
+    # class Meta:
+    #     datatables_extra_json = ('get_options',)
 
    
     
