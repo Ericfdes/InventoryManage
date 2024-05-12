@@ -13,5 +13,6 @@ urlpatterns = [
     path('home/',views.home,name='home'),
     path('inventory/',views.inventory,name='inventory'),
     path('sale/',views.sale,name='sale'),
-    re_path('^api/', include(router.urls))
+    re_path('^api/', include(router.urls)),
+    path('compare/',views.compare,name='compare')
 ]

@@ -60,7 +60,7 @@ class Product(models.Model):
         } 
         
     @classmethod    
-    def category_sales(cls,get):
+    def     category_sales(cls,get):
         category_sales = cls.objects.values('category__name').annotate(total_sales=Sum('price')*F('sold'))
 
      
@@ -91,16 +91,15 @@ class Product(models.Model):
   
         
     @classmethod
-    def total_sales(cls,items,get,colname=None,colist=None):
+    def total_sales(cls,get,items=None,colname=None,colist=None):
         
         if items is not None:
             total_items=items
         else:
-            total_items=3
+            total_items=5
             
         if colname is not None:
-            filter_row = {f'{colname}__exact': 'nan'}  
-            sales = cls.objects.exclude(**filter_row).values(colname).annotate(total_sales=Count('sold'))
+            sales = cls.objects.values(colname).annotate(total_sales=Sum('sold'))
             #sales = cls.objects.values(colname).annotate(total_sales=Count('sold'))
             if sales.exists():
                     highest_sales = sales.order_by('-total_sales')[:total_items]
@@ -111,7 +110,7 @@ class Product(models.Model):
                         return least_sales
                     
             else:
-                return None
+                return "nada"
                 
         elif colist is not None:
             if not isinstance(colist, list):
@@ -119,7 +118,7 @@ class Product(models.Model):
             result = {}
             for col in colist:
                 filter_row = {f'{colname}__exact': 'nan'} 
-                sales = cls.objects.values(col).annotate(total_sales=Count('sold')).exclude(**filter_row)
+                sales = cls.objects.values(col).annotate(total_sales=Sum('sold'))
                 if sales.exists():
                     highest_sales = sales.order_by('-total_sales')[:total_items]
                     least_sales = sales.order_by('-total_sales')[total_items:]
