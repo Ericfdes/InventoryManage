@@ -51,7 +51,13 @@ python manage.py runserver
 
 ## 🖼️ Screenshots  
 
---  
+![compare](https://github.com/user-attachments/assets/c531a796-f5fb-4058-b4c0-f75233a29072)
+
+![dashboard](https://github.com/user-attachments/assets/3c6070dd-7dc6-4170-bc16-b31c0790dd0b)
+
+
+ ![dashboard2](https://github.com/user-attachments/assets/3818fc1e-4b33-4f7d-b7b0-5af63e35bfde)
+
 
 ## 🤝 Contributing  
 
